@@ -1,0 +1,19 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+df = pd.read_csv('COBRA-YTD2017.csv', delimiter=',')
+print('DataFrame Head')
+print('______________')
+pd.read_csv('COBRA-YTD2017.csv',delimiter=',').head()
+print('Types')
+print('_____')
+types = pd.DataFrame(data=df['UC2 Literal'].unique())
+print(types)
+print('Crime Type Counts')
+print('_________________')
+t = df['UC2 Literal']
+typecount = pd.DataFrame(data=t.value_counts())
+print(typecount)
+s=typecount.sum()
+print('Sum: ',s)
+typecount.plot(kind='bar')
