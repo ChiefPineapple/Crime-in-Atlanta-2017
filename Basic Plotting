@@ -23,11 +23,18 @@ typecount = pd.DataFrame(data=t.value_counts())
 print(typecount)
 s=typecount.sum()
 print('Sum: ',s)
-typecount.plot(kind='bar')
 
-//Creating a new dataframe with type and date and then reformatting
+//Creating a new dataframe to hold the crime types and date, then graphing the crime type counts
 odate = pd.DataFrame(data = df['occur_date'])
-typedate=pd.concat([odate,t],axis=1)
+typedate = pd.concat([odate,t], axis = 1)
+typecount = pd.DataFrame(data=typedate['UC2 Literal'].value_counts())
+graph1 = typecount.plot(kind='bar')
+plt.title('Crime Counts in Data')
+plt.xlabel('Crime Types')
+plt.ylabel('Crime Count')
+graph1.get_legend().remove()
+
+//reformatting the date and adjusting the types to be numeric
 typedate['UC2 Literal'] = typedate['UC2 Literal'].replace('LARCENY-FROM VEHICLE',0)
 typedate['UC2 Literal'] = typedate['UC2 Literal'].replace('LARCENY-NON VEHICLE',1)
 typedate['UC2 Literal'] = typedate['UC2 Literal'].replace('AUTO THEFT',2)
@@ -106,3 +113,4 @@ graph = sums.plot(kind='bar')
 plt.title('Crime Counts in 2017')
 plt.xlabel('Crime Types')
 plt.ylabel('Crime Count')
+graph.get_legend().remove()
