@@ -114,3 +114,45 @@ plt.title('Crime Counts in 2017')
 plt.xlabel('Crime Types')
 plt.ylabel('Crime Count')
 graph.get_legend().remove()
+
+//Reformatting the date for the full dataset
+whole = pd.read_csv('COBRA-YTD2017.csv',delimiter=',')
+i=0
+for index,row in whole.iterrows():
+    old=str(whole.at[i,'occur_date'])
+    new=old[6:10]+'-'+old[0:2]+'-'+old[3:5]
+    whole.at[i,'occur_date']=new
+    old=str(whole.at[i,'poss_date'])
+    new=old[6:10]+'-'+old[0:2]+'-'+old[3:5]
+    whole.at[i,'poss_date']=new
+    i+=1
+ whole = whole.sort_index()
+ whole.head()
+ 
+ //Graphing the points of crime by type on a map of atlanta
+import descartes
+import geopandas as gpd
+from shapely.geometry import Point, Polygon
+import matplotlib.lines as mlines
+%matplotlib inline
+street_map = gpd.read_file(r"C:\Users\Ethan\Documents\School\Data Science\Major_Roads\Major_Roads.shp")
+partwhole = pd.DataFrame(data = whole.loc[(whole['occur_date'] >= '2017-01-01') & (whole['occur_date'] <='2017-12-31')])
+partwhole = partwhole.rename(index=str, columns={"x":"longitude","y":"latitude"})
+crs = {'init': 'epsg:4326'}
+geometry = [Point(xy) for xy in zip(partwhole["longitude"], partwhole["latitude"])]
+geo_partwhole = gpd.GeoDataFrame(partwhole, crs = crs, geometry = geometry)
+geo_partwhole.head()
+fig,ax = plt.subplots(figsize=(250,250))
+street_map.plot(ax = ax, alpha = 0.4,color="grey", linewidth=2.0)
+geo_partwhole[geo_partwhole['UC2 Literal'] == 'LARCENY-NON VEHICLE'].plot(ax=ax, markersize = 10, color = "#00FF00", label= 'LARCENY-FROM VEHICLE')
+geo_partwhole[geo_partwhole['UC2 Literal'] == 'LARCENY-FROM VEHICLE'].plot(ax=ax, markersize = 10, color = "#008000", label= 'LARCENY-FROM VEHICLE')
+geo_partwhole[geo_partwhole['UC2 Literal'] == 'ROBBERY-PEDESTRIAN'].plot(ax=ax, markersize = 10, color = "#00FFFF", label= 'ROBBERY-PEDESTRIAN')
+geo_partwhole[geo_partwhole['UC2 Literal'] == 'ROBBERY-RESIDENCE'].plot(ax=ax, markersize = 10, color = "#008080", label= 'ROBBERY-RESIDENCE')
+geo_partwhole[geo_partwhole['UC2 Literal'] == 'ROBBERY-COMMERCIAL'].plot(ax=ax, markersize = 10, color = "#0000FF", label= 'ROBBERY-COMMERCIAL')
+geo_partwhole[geo_partwhole['UC2 Literal'] == 'BURGLARY-RESIDENCE'].plot(ax=ax, markersize = 10, color = "#800080", label= 'BURGLARY-RESIDENCE')
+geo_partwhole[geo_partwhole['UC2 Literal'] == 'BURGLARY-NONRES'].plot(ax=ax, markersize = 10, color = "#FF00FF", label= 'BURGLARY-NONRES')
+geo_partwhole[geo_partwhole['UC2 Literal'] == 'AUTO THEFT'].plot(ax=ax, markersize = 10, color = "yellow", label= 'AUTO THEFT')
+geo_partwhole[geo_partwhole['UC2 Literal'] == 'AGG ASSAULT'].plot(ax=ax, markersize = 10, color = "#808000", label= 'AGG ASSAULT')
+geo_partwhole[geo_partwhole['UC2 Literal'] == 'HOMICIDE'].plot(ax=ax, markersize = 10, color = "#800000", label= 'HOMICIDE')
+plt.legend(prop={'size': 250})
+plt.savefig('crime_type_on_maps.png')
