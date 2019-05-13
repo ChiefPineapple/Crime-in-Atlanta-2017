@@ -1,14 +1,21 @@
+//Setup
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 df = pd.read_csv('COBRA-YTD2017.csv', delimiter=',')
+
+//Overview of columns
 print('DataFrame Head')
 print('______________')
 pd.read_csv('COBRA-YTD2017.csv',delimiter=',').head()
+
+//Types of Crimes
 print('Types')
 print('_____')
 types = pd.DataFrame(data=df['UC2 Literal'].unique())
-print(types)
+types
+
+//Counting the instances of each type
 print('Crime Type Counts')
 print('_________________')
 t = df['UC2 Literal']
@@ -17,3 +24,85 @@ print(typecount)
 s=typecount.sum()
 print('Sum: ',s)
 typecount.plot(kind='bar')
+
+//Creating a new dataframe with type and date and then reformatting
+odate = pd.DataFrame(data = df['occur_date'])
+typedate=pd.concat([odate,t],axis=1)
+typedate['UC2 Literal'] = typedate['UC2 Literal'].replace('LARCENY-FROM VEHICLE',0)
+typedate['UC2 Literal'] = typedate['UC2 Literal'].replace('LARCENY-NON VEHICLE',1)
+typedate['UC2 Literal'] = typedate['UC2 Literal'].replace('AUTO THEFT',2)
+typedate['UC2 Literal'] = typedate['UC2 Literal'].replace('BURGLARY-RESIDENCE',3)
+typedate['UC2 Literal'] = typedate['UC2 Literal'].replace('AGG ASSAULT',4)
+typedate['UC2 Literal'] = typedate['UC2 Literal'].replace('ROBBERY-PEDESTRIAN',5)
+typedate['UC2 Literal'] = typedate['UC2 Literal'].replace('BURGLARY-NONRES',6)
+typedate['UC2 Literal'] = typedate['UC2 Literal'].replace('RAPE',7)
+typedate['UC2 Literal'] = typedate['UC2 Literal'].replace('ROBBERY-COMMERCIAL',8)
+typedate['UC2 Literal'] = typedate['UC2 Literal'].replace('ROBBERY-RESIDENCE',9)
+typedate['UC2 Literal'] = typedate['UC2 Literal'].replace('HOMICIDE',10)
+i=0
+old=str(typedate.at[i,'occur_date'])
+for index,row in typedate.iterrows():
+    old=str(typedate.at[i,'occur_date'])
+    new=old[6:10]+'-'+old[0:2]+'-'+old[3:5]
+    typedate.at[i,'occur_date']=new
+    i+=1
+    
+//Sorting by date
+typedate.head()
+typedate=typedate.set_index('occur_date',drop=True)
+typedate=typedate.sort_index()
+typedate=typedate.reset_index()
+
+//Creating a new dataframe with a column for each crime type, each row will show the count of each crime type for each day
+td = pd.DataFrame(columns=['date','LARCENY-FROM VEHICLE','LARCENY-NON VEHICLE','AUTO THEFT','BURGLARY-RESIDENCE','AGG ASSAULT','ROBBERY-PEDESTRIAN','BURGLARY-NONRES','RAPE','ROBBERY-COMMERCIAL','ROBBERY-RESIDENCE','HOMICIDE'])
+for index, row in typedate.iterrows():
+    td.at[row['occur_date'],'date'] = row['occur_date']
+    td = td.fillna(0)
+    if row['UC2 Literal'] == 0:
+        td.at[row['occur_date'],'LARCENY-FROM VEHICLE'] += 1
+    if row['UC2 Literal'] == 1:
+        td.at[row['occur_date'],'LARCENY-NON VEHICLE'] += 1
+    if row['UC2 Literal'] == 2:
+        td.at[row['occur_date'],'AUTO THEFT'] += 1
+    if row['UC2 Literal'] == 3:
+        td.at[row['occur_date'],'BURGLARY-RESIDENCE'] += 1
+    if row['UC2 Literal'] == 4:
+        td.at[row['occur_date'],'AGG ASSAULT'] += 1
+    if row['UC2 Literal'] == 5:
+        td.at[row['occur_date'],'ROBBERY-PEDESTRIAN'] += 1
+    if row['UC2 Literal'] == 6:
+        td.at[row['occur_date'],'BURGLARY-NONRES'] += 1
+    if row['UC2 Literal'] == 7:
+        td.at[row['occur_date'],'RAPE'] += 1
+    if row['UC2 Literal'] == 8:
+        td.at[row['occur_date'],'ROBBERY-COMMERCIAL'] += 1
+    if row['UC2 Literal'] == 9:
+        td.at[row['occur_date'],'ROBBERY-RESIDENCE'] += 1
+    if row['UC2 Literal'] == 10:
+        td.at[row['occur_date'],'HOMICIDE'] += 1
+td.sort_values(by=['date'])
+td = td.set_index('date',drop=True)
+typedate.head()
+
+//Graphing each crime instance over the year 2017
+seventeen1=td.loc['2017-01-01':'2017-06-31']
+ax = seventeen1.plot()
+plt.legend(loc='center left',bbox_to_anchor=(1.0,0.5))
+plt.title('Crime Types over 2017')
+plt.ylabel('Crimes Per Day')
+ax.set_xticklabels(['Jan','Feb','Mar','Apr','May','Jun'])
+seventeen2=td.loc['2017-07-01':'2017-12-31']
+bx = seventeen2.plot()
+plt.legend(loc='center left',bbox_to_anchor=(1.0,0.5))
+plt.title('Crime Types over 2017')
+plt.ylabel('Crimes Per Day')
+bx.set_xticklabels(['Jul','Aug','Sep','Oct','Nov','Dec'])
+
+//Showing the counts for just the year 2017
+minitd= pd.DataFrame(data = td.loc['2017-01-01':'2017-12-31'])
+sums = pd.DataFrame(data = minitd.sum(axis = 0))
+sums.head()
+graph = sums.plot(kind='bar')
+plt.title('Crime Counts in 2017')
+plt.xlabel('Crime Types')
+plt.ylabel('Crime Count')
