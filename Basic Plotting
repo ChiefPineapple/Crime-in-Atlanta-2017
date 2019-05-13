@@ -101,7 +101,7 @@ bx.set_xticklabels(['Jul','Aug','Sep','Oct','Nov','Dec'])
 //Showing the counts for just the year 2017
 minitd= pd.DataFrame(data = td.loc['2017-01-01':'2017-12-31'])
 sums = pd.DataFrame(data = minitd.sum(axis = 0))
-sums.head()
+sums
 graph = sums.plot(kind='bar')
 plt.title('Crime Counts in 2017')
 plt.xlabel('Crime Types')
