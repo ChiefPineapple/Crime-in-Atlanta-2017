@@ -92,18 +92,16 @@ td = td.set_index('date',drop=True)
 typedate.head()
 
 //Graphing each crime instance over the year 2017
-seventeen1=td.loc['2017-01-01':'2017-06-31']
-ax = seventeen1.plot()
-plt.legend(loc='center left',bbox_to_anchor=(1.0,0.5))
+seventeen1=td.loc['2017-01-01':'2017-12-31']
+ax = seventeen1.plot(figsize=(12, 8))
 plt.title('Crime Types over 2017')
 plt.ylabel('Crimes Per Day')
-ax.set_xticklabels(['Jan','Feb','Mar','Apr','May','Jun'])
-seventeen2=td.loc['2017-07-01':'2017-12-31']
-bx = seventeen2.plot()
-plt.legend(loc='center left',bbox_to_anchor=(1.0,0.5))
-plt.title('Crime Types over 2017')
-plt.ylabel('Crimes Per Day')
-bx.set_xticklabels(['Jul','Aug','Sep','Oct','Nov','Dec'])
+plt.xlabel('Date')
+plt.legend(loc='center left')
+plt.xticks(np.arange(0, 365, 31))
+ax.set_xticklabels(['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'])
+plt.legend(loc='upper left')
+fig, ax = plt.subplots()
 
 //Showing the counts for just the year 2017
 minitd= pd.DataFrame(data = td.loc['2017-01-01':'2017-12-31'])
