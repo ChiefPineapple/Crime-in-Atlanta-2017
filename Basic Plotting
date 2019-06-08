@@ -24,30 +24,6 @@ print(typecount)
 s=typecount.sum()
 print('Sum: ',s)
 
-//Counting the instances of Larceny from Vehicle in 2017
-seventeen1=td.loc['2017-01-01':'2017-12-31']
-ax = seventeen1['LARCENY-FROM VEHICLE'].plot(figsize=(12, 8))
-plt.legend(loc='center left',bbox_to_anchor=(1.0,0.5))
-plt.title('Crime Types over 2017')
-plt.ylabel('Crimes Per Day')
-plt.xlabel('Date')
-ax.set_xticklabels(['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'])
-plt.legend(loc='upper left')
-plt.title('Larceny from Vehicle over 2017')
-plt.ylabel('Crimes Per Day')
-plt.xticks(np.arange(0, 365, 31))
-
-
-//Showing the counts for just the year 2017
-minitd= pd.DataFrame(data = td.loc['2017-01-01':'2017-12-31'])
-sums = pd.DataFrame(data = minitd.sum(axis = 0))
-sums
-graph = sums.plot(kind='bar')
-plt.title('Crime Counts in 2017')
-plt.xlabel('Crime Types')
-plt.ylabel('Crime Count')
-graph.get_legend().remove()
-
 
 //Creating a new dataframe to hold the crime types and date, then graphing the crime type counts
 odate = pd.DataFrame(data = df['occur_date'])
@@ -116,6 +92,7 @@ td.sort_values(by=['date'])
 td = td.set_index('date',drop=True)
 typedate.head()
 
+
 //Graphing each crime instance over the year 2017
 seventeen1=td.loc['2017-01-01':'2017-12-31']
 ax = seventeen1.plot(figsize=(12, 8))
@@ -126,6 +103,38 @@ plt.legend(loc='center left')
 plt.xticks(np.arange(0, 365, 31))
 ax.set_xticklabels(['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'])
 plt.legend(loc='upper left')
+
+
+//Graphing the instances of Larceny from Vehicle in 2017
+seventeen1=td.loc['2017-01-01':'2017-12-31']
+ax = seventeen1['LARCENY-FROM VEHICLE'].plot(figsize=(12, 8))
+plt.legend(loc='center left',bbox_to_anchor=(1.0,0.5))
+plt.title('Crime Types over 2017')
+plt.ylabel('Crimes Per Day')
+plt.xlabel('Date')
+ax.set_xticklabels(['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'])
+plt.legend(loc='upper left')
+plt.title('Larceny from Vehicle over 2017')
+plt.ylabel('Crimes Per Day')
+plt.xticks(np.arange(0, 365, 31))
+
+
+//Boxplot 
+fig1, ax1 = plt.subplots()
+ax1.set_title('Boxplot of Larceny from Vehicle')
+ax1.set_ylabel('Number of Instances per Day')
+ax1.boxplot(seventeen1['LARCENY-FROM VEHICLE'])
+
+
+//Showing the counts for just the year 2017
+minitd= pd.DataFrame(data = td.loc['2017-01-01':'2017-12-31'])
+sums = pd.DataFrame(data = minitd.sum(axis = 0))
+sums
+graph = sums.plot(kind='bar')
+plt.title('Crime Counts in 2017')
+plt.xlabel('Crime Types')
+plt.ylabel('Crime Count')
+graph.get_legend().remove()
 
 
 //Reformatting the date for the full dataset
