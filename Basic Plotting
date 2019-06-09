@@ -126,6 +126,26 @@ ax1.set_ylabel('Number of Instances per Day')
 ax1.boxplot(seventeen1['LARCENY-FROM VEHICLE'])
 
 
+//Graphing the Average per Month of Larceny From Vehicle Over 2017
+data={'Average':[0,0,0,0,0,0,0,0,0,0,0,0]}
+lfvmonthav = pd.DataFrame(data, index=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'])
+s = seventeen1.reset_index()
+i = 0
+for index, row in lfvmonthav.iterrows():
+    v = lfvmonthav.loc[i,'Average'] 
+    lfvmonthav.loc[i,'Average'] = v/c[i]
+    i+=1
+lfvmonthav
+ax = lfvmonthav['Average'].plot(figsize=(12, 8))
+plt.legend(loc='center left',bbox_to_anchor=(1.0,0.5))
+ax.set_xticklabels(['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'])
+plt.legend(loc='upper left')
+plt.title('Larceny from Vehicle over 2017 Averaged per Month')
+plt.ylabel('Crimes Per Day')
+plt.xlabel('Date')
+plt.xticks(np.arange(0, 12, 1))
+
+
 //Showing the counts for just the year 2017
 minitd= pd.DataFrame(data = td.loc['2017-01-01':'2017-12-31'])
 sums = pd.DataFrame(data = minitd.sum(axis = 0))
